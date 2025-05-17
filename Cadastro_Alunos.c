@@ -73,7 +73,7 @@ void adicionarAluno() {
         printf("\n--- Adicionar Novo Aluno ---\n");
         printf("Matricula: ");
         scanf("%d", &novoAluno.matricula);
-        getchar(); /
+        getchar(); 
 
         // Verificar se a matrícula já existe
         if (buscarAluno(novoAluno.matricula) != -1) {
@@ -115,7 +115,7 @@ void editarAluno() {
     printf("\n--- Editar Aluno ---\n");
     printf("Digite a matricula do aluno que deseja editar: ");
     scanf("%d", &matriculaEditar);
-    getchar(); // Limpar o buffer
+    getchar(); 
 
     int indice = buscarAluno(matriculaEditar);
 
@@ -137,7 +137,7 @@ void editarAluno() {
         printf("Nova idade (digite -1 para manter): ");
         int novaIdade;
         scanf("%d", &novaIdade);
-        getchar(); // Limpar o buffer
+        getchar();
         if (novaIdade != -1) {
             alunos[indice].idade = novaIdade;
         }
@@ -153,7 +153,7 @@ void apagarAluno() {
     printf("\n--- Apagar Aluno ---\n");
     printf("Digite a matricula do aluno que deseja apagar: ");
     scanf("%d", &matriculaApagar);
-    getchar(); // Limpar o buffer
+    getchar(); 
 
     int indice = buscarAluno(matriculaApagar);
 
