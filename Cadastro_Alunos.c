@@ -6,18 +6,15 @@
 #define NOME_SIZE 50
 #define ARQUIVO_ALUNOS "alunos.txt"
 
-// Estrutura para armazenar os dados do aluno
 typedef struct {
     int matricula;
     char nome[NOME_SIZE];
     int idade;
 } Aluno;
 
-// Array para armazenar os alunos (alocação estática, mas com controle de tamanho)
 Aluno alunos[MAX_ALUNOS];
 int numAlunos = 0;
 
-// Protótipos das funções
 void adicionarAluno();
 void listarAlunos();
 void editarAluno();
@@ -29,7 +26,7 @@ void carregarAlunos();
 int main() {
     int opcao;
 
-    carregarAlunos(); 
+    carregarAlunos();
 
     do {
         printf("\n--- Sistema de Cadastro de Alunos ---\n");
@@ -40,7 +37,7 @@ int main() {
         printf("0. Sair\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
-        getchar(); 
+        getchar();
 
         switch (opcao) {
             case 1:
@@ -56,7 +53,7 @@ int main() {
                 apagarAluno();
                 break;
             case 0:
-                salvarAlunos(); // Salva os dados dos alunos ao sair do programa
+                salvarAlunos();
                 printf("Saindo do sistema. Ate a proxima!\n");
                 break;
             default:
@@ -73,9 +70,8 @@ void adicionarAluno() {
         printf("\n--- Adicionar Novo Aluno ---\n");
         printf("Matricula: ");
         scanf("%d", &novoAluno.matricula);
-        getchar(); 
+        getchar();
 
-        // Verificar se a matrícula já existe
         if (buscarAluno(novoAluno.matricula) != -1) {
             printf("Erro: Matricula ja cadastrada.\n");
             return;
@@ -83,11 +79,11 @@ void adicionarAluno() {
 
         printf("Nome: ");
         fgets(novoAluno.nome, NOME_SIZE, stdin);
-        novoAluno.nome[strcspn(novoAluno.nome, "\n")] = 0; 
+        novoAluno.nome[strcspn(novoAluno.nome, "\n")] = 0;
 
         printf("Idade: ");
         scanf("%d", &novoAluno.idade);
-        getchar(); 
+        getchar();
 
         alunos[numAlunos++] = novoAluno;
         printf("Aluno cadastrado com sucesso!\n");
@@ -115,7 +111,7 @@ void editarAluno() {
     printf("\n--- Editar Aluno ---\n");
     printf("Digite a matricula do aluno que deseja editar: ");
     scanf("%d", &matriculaEditar);
-    getchar(); 
+    getchar();
 
     int indice = buscarAluno(matriculaEditar);
 
@@ -153,12 +149,11 @@ void apagarAluno() {
     printf("\n--- Apagar Aluno ---\n");
     printf("Digite a matricula do aluno que deseja apagar: ");
     scanf("%d", &matriculaApagar);
-    getchar(); 
+    getchar();
 
     int indice = buscarAluno(matriculaApagar);
 
     if (indice != -1) {
-        // Deslocar os alunos subsequentes para preencher o espaço do aluno apagado
         for (int i = indice; i < numAlunos - 1; i++) {
             alunos[i] = alunos[i + 1];
         }
@@ -169,17 +164,15 @@ void apagarAluno() {
     }
 }
 
-// Função para buscar um aluno pela matrícula e retornar seu índice no array
 int buscarAluno(int matricula) {
     for (int i = 0; i < numAlunos; i++) {
         if (alunos[i].matricula == matricula) {
-            return i; 
+            return i;
         }
     }
-    return -1; 
+    return -1;
 }
 
-// Função para salvar os dados dos alunos no arquivo
 void salvarAlunos() {
     FILE *arquivo = fopen(ARQUIVO_ALUNOS, "w");
     if (arquivo == NULL) {
@@ -188,14 +181,13 @@ void salvarAlunos() {
     }
 
     for (int i = 0; i < numAlunos; i++) {
-        fprintf(arquivo, "%d %s %d\n", alunos[i].matricula, alunos[i].nome, alunos[i].idade);
+        fprintf(arquivo, "%d \"%s\" %d\n", alunos[i].matricula, alunos[i].nome, alunos[i].idade);
     }
 
     fclose(arquivo);
     printf("Dados dos alunos salvos com sucesso!\n");
 }
 
-// Função para carregar os dados dos alunos do arquivo
 void carregarAlunos() {
     FILE *arquivo = fopen(ARQUIVO_ALUNOS, "r");
     if (arquivo == NULL) {
@@ -203,11 +195,21 @@ void carregarAlunos() {
         return;
     }
 
-    while (fscanf(arquivo, "%d %s %d", &alunos[numAlunos].matricula, alunos[numAlunos].nome, &alunos[numAlunos].idade) == 3) {
-        numAlunos++;
+    char linha[100];
+    while (fgets(linha, sizeof(linha), arquivo) != NULL) {
         if (numAlunos >= MAX_ALUNOS) {
             printf("Aviso: Limite maximo de alunos carregados.\n");
             break;
+        }
+
+        int matricula, idade;
+        char nome[NOME_SIZE];
+
+        if (sscanf(linha, "%d \"%[^\"]\" %d", &matricula, nome, &idade) == 3) {
+            alunos[numAlunos].matricula = matricula;
+            strcpy(alunos[numAlunos].nome, nome);
+            alunos[numAlunos].idade = idade;
+            numAlunos++;
         }
     }
 
